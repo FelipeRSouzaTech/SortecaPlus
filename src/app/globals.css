@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f7f7f4;
+  --surface: #ffffff;
+  --surface-2: #efeee9;
+  --text: #1c1c1a;
+  --muted: #6b6a64;
+  --border: rgba(28, 28, 26, 0.12);
+  --accent: #0f6e56;
+  --accent-bg: #e1f5ee;
+  --hot: #a32d2d;
+  --hot-bg: #fcebeb;
+  --cold: #185fa5;
+  --cold-bg: #e6f1fb;
+  --danger: #a32d2d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141413;
+    --surface: #1f1f1d;
+    --surface-2: #2a2a27;
+    --text: #f1efe8;
+    --muted: #a3a29b;
+    --border: rgba(241, 239, 232, 0.14);
+    --accent: #5dcaa5;
+    --accent-bg: #08503f;
+    --hot: #f7c1c1;
+    --hot-bg: #6b1d1d;
+    --cold: #b5d4f4;
+    --cold-bg: #0c3a6a;
+    --danger: #f09595;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-bg: var(--accent-bg);
+  --color-hot: var(--hot);
+  --color-hot-bg: var(--hot-bg);
+  --color-cold: var(--cold);
+  --color-cold-bg: var(--cold-bg);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}

@@ -72,7 +72,7 @@ export async function sincronizar(prisma: PrismaClient, opcoes: OpcoesSync = {})
   const resultado: ResultadoSync = {
     ultimoNaApi: ultimo.numero,
     gravados: [],
-    ignorados: ate - de + 1 - fila.length,
+    ignorados: Math.max(0, ate - de + 1 - fila.length),
     falhas: [],
   };
   log(`Último concurso na API: ${ultimo.numero}. A buscar: ${fila.length}. Já no banco: ${resultado.ignorados}.`);
