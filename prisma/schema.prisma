@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Um concurso (sorteio) da Lotofácil.
+model Concurso {
+  numero          Int       @id
+  dataApuracao    DateTime  @map("data_apuracao") @db.Date
+  acumulado       Boolean   @default(false)
+  valorArrecadado Decimal?  @map("valor_arrecadado") @db.Decimal(15, 2)
+  /// De onde veio o registro: "manual", "scraping", "api-caixa"...
+  fonte           String    @default("manual") @db.VarChar(32)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  dezenas DezenaSorteada[]
+  rateios Rateio[]
+
+  @@index([dataApuracao])
+  @@map("concurso")
+}
+
+/// Uma das 15 dezenas sorteadas em um concurso (1 linha por dezena).
+model DezenaSorteada {
+  concursoNumero Int      @map("concurso_numero")
+  /// 1 a 25
+  dezena         Int      @db.SmallInt
+  /// Posição na ordem do sorteio (1 a 15); opcional se a fonte não informar.
+  ordemSorteio   Int?     @map("ordem_sorteio") @db.SmallInt
+
+  concurso Concurso @relation(fields: [concursoNumero], references: [numero], onDelete: Cascade)
+
+  @@id([concursoNumero, dezena])
+  @@unique([concursoNumero, ordemSorteio])
+  @@index([dezena])
+  @@map("dezena_sorteada")
+}
+
+/// Premiação por faixa de acertos (11 a 15).
+model Rateio {
+  concursoNumero Int     @map("concurso_numero")
+  acertos        Int     @db.SmallInt
+  ganhadores     Int
+  valorPremio    Decimal @map("valor_premio") @db.Decimal(15, 2)
+
+  concurso Concurso @relation(fields: [concursoNumero], references: [numero], onDelete: Cascade)
+
+  @@id([concursoNumero, acertos])
+  @@map("rateio")
+}
