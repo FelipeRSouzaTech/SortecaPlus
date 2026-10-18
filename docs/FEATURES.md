@@ -15,7 +15,8 @@
 ### F1. Base histórica de concursos
 - Importar todos os concursos já realizados (número, data, dezenas, rateio).
 - Sincronização automática do concurso mais recente (job agendado).
-- Fonte de dados: **a definir** (API pública da Caixa vs. arquivo oficial de resultados).
+- Fonte de dados: API pública da Caixa (`servicebus2.caixa.gov.br/portaldeloterias/api/lotofacil[/{numero}]`).
+  Comando `npm run sync` busca só os concursos que faltam no banco (`--de`, `--ate`, `--forcar`).
 
 ### F2. Análise estatística
 - **Frequência:** quantas vezes cada dezena saiu (histórico completo e janelas: últimos 10/25/50/100 concursos).

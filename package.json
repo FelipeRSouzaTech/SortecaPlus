@@ -8,12 +8,21 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "sync": "tsx scripts/sync-resultados.ts",
+    "test": "vitest run",
+    "typecheck": "tsc"
   },
   "devDependencies": {
-    "prisma": "^6.19.3"
+    "@types/node": "^26.6.5",
+    "prisma": "^6.19.3",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.3"
-  }
+    "@prisma/client": "^6.19.3",
+    "zod": "^4.6.7"
+  },
+  "type": "module"
 }
