@@ -14,7 +14,7 @@
  */
 
 import { prisma } from "@/lib/db";
-import { buscarConcurso, ConcursoNaoEncontradoError } from "@/lib/caixa/client";
+import { buscarConcurso, buscarUltimoConcurso, ConcursoNaoEncontradoError } from "@/lib/caixa/client";
 import { gravarConcurso, sincronizar } from "@/lib/sync/sincronizar";
 
 const [, , rawNumero] = process.argv;
@@ -33,11 +33,20 @@ const numero = rawNumero ? Number(rawNumero) : undefined;
       await gravarConcurso(prisma, concurso);
       console.log(`🎉  Concurso ${numero} gravado com sucesso.`);
     } else {
-      console.log("🔎  Nenhum número fornecido – iniciando sincronização completa…");
-      const resultado = await sincronizar(prisma);
-      console.log(`✅  Sincronização concluída. ${resultado.gravados.length} concurso(s) gravado(s), ${resultado.falhas.length} falha(s).`);
-      if (resultado.falhas.length) {
-        console.error("❗️ Falhas:", resultado.falhas.map((f) => `${f.numero} (${f.erro})`).join(", "));
+      console.log("🔎  Nenhum número fornecido – iniciando sincronização de novos concursos…");
+      // Busca o último concurso já armazenado no banco.
+      const ultimoNoBanco = await prisma.concurso.aggregate({ _max: { numero: true } });
+      const proximo = (ultimoNoBanco._max.numero ?? 0) + 1;
+      // Busca o último concurso disponível na API da Caixa.
+      const ultimoNaApi = await buscarUltimoConcurso();
+      if (proximo > ultimoNaApi.numero) {
+        console.log("✅  Banco já está atualizado. Nenhum novo concurso para gravar.");
+      } else {
+        const resultado = await sincronizar(prisma, { de: proximo, ate: ultimoNaApi.numero });
+        console.log(`✅  Sincronização concluída. ${resultado.gravados.length} concurso(s) gravado(s), ${resultado.falhas.length} falha(s).`);
+        if (resultado.falhas.length) {
+          console.error("❗️ Falhas:", resultado.falhas.map((f) => `${f.numero} (${f.erro})`).join(", "));
+        }
       }
     }
   } catch (e) {
