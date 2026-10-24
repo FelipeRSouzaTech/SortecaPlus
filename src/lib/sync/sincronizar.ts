@@ -24,7 +24,6 @@ export type ResultadoSync = {
 };
 
 /** Grava (ou substitui) um concurso e suas dezenas/rateios numa única transação. */
-export
 export async function gravarConcurso(prisma: PrismaClient, c: ConcursoImportado) {
   const dados = {
     dataApuracao: c.dataApuracao,
